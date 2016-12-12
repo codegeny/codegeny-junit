@@ -19,17 +19,17 @@
 		<system>GitHub Issues</system>
 		<url>https://github.com/codegeny/codegeny-junit/issues</url>
 	</issueManagement>
-	
-	 <ciManagement>
-        <system>Travis CI</system>
-        <url>https://travis-ci.org/codegeny/codegeny-junit</url>
-    </ciManagement>
-	
+
+	<ciManagement>
+		<system>Travis CI</system>
+		<url>https://travis-ci.org/codegeny/codegeny-junit</url>
+	</ciManagement>
+
 	<scm>
-        <url>https://github.com/codegeny/codegeny-junit</url>
-        <connection>scm:git:github.com/codegeny/codegeny-junit.git</connection>
-        <developerConnection>scm:git:git@github.com:codegeny/codegeny-junit.git</developerConnection>
-    </scm>
+		<url>https://github.com/codegeny/codegeny-junit</url>
+		<connection>scm:git:github.com/codegeny/codegeny-junit.git</connection>
+		<developerConnection>scm:git:git@github.com:codegeny/codegeny-junit.git</developerConnection>
+	</scm>
 
 	<developers>
 		<developer>
@@ -44,6 +44,30 @@
 		<maven.compiler.target>1.8</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.7.201606060606</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
 	<dependencies>
 		<dependency>
