@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>org.codegeny</groupId>
+	<artifactId>codegeny-junit</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<url>http://codegeny.org/codegeny-junit</url>
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>GitHub Issues</system>
+		<url>https://github.com/codegeny/codegeny-junit/issues</url>
+	</issueManagement>
+	
+	 <ciManagement>
+        <system>Travis CI</system>
+        <url>https://travis-ci.org/codegeny/codegeny-junit</url>
+    </ciManagement>
+	
+	<scm>
+        <url>https://github.com/codegeny/codegeny-junit</url>
+        <connection>scm:git:github.com/codegeny/codegeny-junit.git</connection>
+        <developerConnection>scm:git:git@github.com:codegeny/codegeny-junit.git</developerConnection>
+    </scm>
+
+	<developers>
+		<developer>
+			<id>xavierdury</id>
+			<name>Xavier Dury</name>
+			<url>https://github.com/xavierdury</url>
+		</developer>
+	</developers>
+
+	<properties>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.12</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomee</groupId>
+			<artifactId>javaee-api</artifactId>
+			<version>7.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.dbunit</groupId>
+			<artifactId>dbunit</artifactId>
+			<version>2.5.3</version>
+			<optional>true</optional>
+			<exclusions>
+				<exclusion>
+					<groupId>stax</groupId>
+					<artifactId>stax-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<version>1.4.193</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-entitymanager</artifactId>
+			<version>5.0.10.Final</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.hibernate.javax.persistence</groupId>
+					<artifactId>hibernate-jpa-2.1-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.apache.geronimo.specs</groupId>
+					<artifactId>geronimo-jta_1.1_spec</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>javax.enterprise</groupId>
+					<artifactId>cdi-api</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.tomee</groupId>
+			<artifactId>openejb-junit</artifactId>
+			<version>7.0.1</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.openjpa</groupId>
+					<artifactId>openjpa</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.hsqldb</groupId>
+					<artifactId>hsqldb</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+	</dependencies>
+
+</project>
