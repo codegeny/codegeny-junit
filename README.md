@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/codegeny/codegeny-junit.png)](https://travis-ci.org/codegeny/codegeny-junit)
+[![Code Coverage](https://codecov.io/gh/codegeny/codegeny-junit/branch/master/graph/badge.svg)](https://codecov.io/gh/codegeny/codegeny-junit/branch/master)
 
 # codegeny-junit
 
