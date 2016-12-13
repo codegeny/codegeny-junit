@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.dbunit.dataset.DataSetException;
-import org.dbunit.dataset.ITable;
 
 public class ReplacementFunctions {
 	
@@ -16,7 +15,7 @@ public class ReplacementFunctions {
 		return (table, row, column, value) -> value;
 	}
 	
-	private static Object resource(ITable table, String column, Object value, ResourceLoader loader, String prefix) throws DataSetException {
+	private static Object resource(Object value, ResourceLoader loader, String prefix) throws DataSetException {
 		try {
 			if (value instanceof String) {
 				String string = (String) value;
@@ -41,7 +40,7 @@ public class ReplacementFunctions {
 	}
 	
 	public static final ReplacementFunction resource(ResourceLoader loader, String prefix) {
-		return (table, row, column, value) -> resource(table, column, value, loader, prefix);
+		return (table, row, column, value) -> resource(value, loader, prefix);
 	}
 
 	public static final ReplacementFunction toNull() {

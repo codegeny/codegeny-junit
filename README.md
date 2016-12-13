@@ -6,4 +6,147 @@
 
 A collection of JUnit rules (mainly for DBUnit and JPA) that I am using and wanted to share.
 
-Examples show how to use/combine rules for DBUnit, JPA and OpenEJB ApplicationComposer/EJBContainer.
+## DBUnitRule
+
+This is a thin layer which drives DBUnit through a JUnit rule and some annotations.
+
+Other projects exist which provide the same kind of functionality:
+
+- [SpringTestDBUnit](https://github.com/springtestdbunit/spring-test-dbunit) for Spring
+- [Unitils](http://www.unitils.org/tutorial-database.html)
+
+This DBUnit integration tries to keep things simple and not tied to any other framework.
+
+DBUnitRule only needs 2 things to work:
+
+- A `ResourceLoader` to resolve (xml) data-sets
+- A `ConnectionProvider` to provide the database connection(s) to work on
+
+## Simple example
+
+```java
+@Rule
+public final DBUnitRule dbUnit = new DBUnitRule(
+    ResourceLoader.fromClass(this),
+    name -> new DatabaseConnection(DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "sa", ""))
+);
+    
+@Test
+@DBUnit(dataSets = "initial.xml", expectedDataSets = "expected.xml")
+public void testSomething() { ... }    
+```
+
+### ResourceLoader
+
+The `ResourceLoader` is given to the `DBUnitRule` so that it can load the data-set.
+
+```java
+public interface ResourceLoader {
+	
+    InputStream loadResource(String name) throws IOException;
+}   
+```
+
+Various static methods provide ready-to-use implementations (for classpath, files...)
+
+### ConnectionProvider
+
+The `ConnectionProvider` must also be given to the `DBUnitRule` and provides (named) database connections.
+
+```java
+public interface ConnectionProvider {
+
+    IDatabaseConnection getConnection(String name) throws Exception;
+}
+```
+
+Notice that the return type is DBUnit `IDatabaseConnection`.
+
+If your test only uses one connection, you can provide a `ConnectionProvider` like this:
+
+```java
+ConnectionProvider cp = name -> new DatabaseConnection(DriverManager.getConnection("jdbc:h2:mem:test;DB_CLOSE_DELAY=-1", "sa", ""));
+```
+
+If you have a `DataSource`:
+
+```java
+DataSource dataSource = ...;
+ConnectionProvider cp = name -> new DatabaseDataSourceConnection(dataSource);
+```
+
+If you are using JNDI with multiple `DataSource`s:
+
+```java
+ConnectionProvider cp = name -> new DatabaseDataSourceConnection(new InitialContext(), "java:comp/env/jdbc/" + name));
+```
+
+When using multiple `DataSource`, you can specify the connection name via the `@DBUnit` annotation:
+
+```java
+@Test
+@DBUnit(name = "customerDB" dataSets = "initial-customers.xml", expectedDataSets = "expected-customers.xml")
+@DBUnit(name = "orderDB" dataSets = "initial-orders.xml", expectedDataSets = "expected-orders.xml")
+public void testSomething() { ... }
+```
+
+### Mixing DBUnitRule with embedded containers like OpenEJB
+
+If you are using an embedded container inside your integration tests, you can let that container managed the lifecycle of the `DataSource` and write
+just enough code to fetch the `DataSource` from the container to give it to the `DBUnitRule`:
+
+```java
+@Properties({
+	@Property(key = "defaultDataSource", value = "new://Resource?type=DataSource"),
+	@Property(key = "defaultDataSource.JdbcUrl", value = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"),
+	@Property(key = "defaultDataSource.JdbcDriver", value = "org.h2.Driver"),
+})
+public class MyDatabaseIT {
+
+    @ClassRule
+    public static final EJBContainerRule CONTAINER = new EJBContainerRule(); 
+	
+    @Rule
+    public final TestRule dbUnit = RuleChain
+        .outerRule(new DBUnitRule(ResourceLoader.fromClass(this), name -> new DatabaseDataSourceConnection(CONTAINER.resource(DataSource.class, "defaultDataSource"))))
+        .around(new InjectRule(this, CONTAINER))
+        .around(new TransactionRule()); // transaction must come after dbunit
+        
+    @Test
+    @DBUnit(dataSets = "initial.xml", expectedDataSets = "expected.xml")
+    @Transaction
+    public void testSomething() { ... }  
+}
+```
+
+Alternatively, you could just `@Inject` the `DataSource` and use it in the `@DBUnitRule` (but make sure the injection rule is called before the dbunit one):
+
+```java
+@Properties({
+	@Property(key = "defaultDataSource", value = "new://Resource?type=DataSource"),
+	@Property(key = "defaultDataSource.JdbcUrl", value = "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"),
+	@Property(key = "defaultDataSource.JdbcDriver", value = "org.h2.Driver"),
+})
+public class MyDatabaseIT {
+
+    @ClassRule
+    public static final EJBContainerRule CONTAINER = new EJBContainerRule(); 
+
+    @Inject
+    private DataSource dataSource;
+	
+    @Rule
+    public final TestRule dbUnit = RuleChain
+        .outerRule(new InjectRule(this, CONTAINER)) // injection must come before dbunit
+        .around(new DBUnitRule(ResourceLoader.fromClass(this), name -> new DatabaseDataSourceConnection(this.dataSource))
+        .around(new TransactionRule()); // transaction must come after dbunit
+        
+    @Test
+    @DBUnit(dataSets = "initial.xml", expectedDataSets = "expected.xml")
+    @Transaction
+    public void testSomething() { ... }  
+}
+```
+
+If you are using some kind of transaction rule, make sure that it comes after the DBUnit rule (otherwise, changes made inside the test won't be visible by the `DBUnitRule`
+and you will get an assertion error.
