@@ -12,4 +12,4 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in ./src/deploy/pubring.gpg.enc -out $HOME/pubring.gpg -d
   - openssl aes-256-cbc -pass pass:$ENCRYPTION_PASSWORD -in ./src/deploy/secring.gpg.enc -out $HOME/secring.gpg -d
-  - mvn deploy --settings ./src/deploy/settings.xml -DskipTests=true -B
+  - "[[ ${TRAVIS_PULL_REQUEST} == 'false' ]] && [[ ${TRAVIS_TAG} == '' ]] && mvn deploy --settings ./src/deploy/settings.xml -DskipTests=true -B"
