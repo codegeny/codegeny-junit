@@ -67,10 +67,11 @@ public class DBUnitRule implements TestRule {
 	
 	public @Override Statement apply(Statement base, Description description) {
 		try {
+			Statement result = base;
 			for (DBUnit dbUnit : description.getTestClass().getDeclaredMethod(description.getMethodName()).getAnnotationsByType(DBUnit.class)) {
-				base = new DBUnitStatement(base, dbUnit);
+				result = new DBUnitStatement(result, dbUnit);
 			}
-			return base;
+			return result;
 		} catch (NoSuchMethodException noSuchMethodException) {
 			throw new DatabaseUnitRuntimeException(noSuchMethodException);
 		}

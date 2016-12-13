@@ -18,6 +18,7 @@ import javax.persistence.spi.PersistenceUnitInfo;
 import javax.persistence.spi.PersistenceUnitTransactionType;
 import javax.sql.DataSource;
 
+import org.codegeny.junit.President;
 import org.dbunit.database.DatabaseDataSourceConnection;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -62,7 +63,9 @@ public class JavaPersistenceSharingDataSourceDBUnitRuleTest {
 		return new PersistenceUnitInfo() {
 			
 			@Override
-			public void addTransformer(ClassTransformer transformer) {}
+			public void addTransformer(ClassTransformer transformer) {
+				return;
+			}
 			
 			@Override
 			public boolean excludeUnlistedClasses() {

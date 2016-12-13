@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
+import org.codegeny.junit.President;
 import org.dbunit.database.DatabaseConnection;
 import org.junit.After;
 import org.junit.AfterClass;

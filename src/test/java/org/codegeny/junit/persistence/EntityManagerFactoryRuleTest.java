@@ -2,7 +2,7 @@ package org.codegeny.junit.persistence;
 
 import static org.junit.Assert.assertEquals;
 
-import org.codegeny.junit.database.President;
+import org.codegeny.junit.President;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;

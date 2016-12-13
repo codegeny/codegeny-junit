@@ -9,6 +9,7 @@ import org.apache.openejb.junit.jee.config.Properties;
 import org.apache.openejb.junit.jee.config.Property;
 import org.apache.openejb.junit.jee.transaction.Transaction;
 import org.apache.openejb.junit.jee.transaction.TransactionRule;
+import org.codegeny.junit.President;
 import org.dbunit.database.DatabaseDataSourceConnection;
 import org.junit.Rule;
 import org.junit.Test;

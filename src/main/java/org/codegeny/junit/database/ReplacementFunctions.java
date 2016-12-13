@@ -16,7 +16,7 @@ public class ReplacementFunctions {
 		return (table, row, column, value) -> value;
 	}
 	
-	private static Object resource(ITable table, int row, String column, Object value, ResourceLoader loader, String prefix) throws DataSetException {
+	private static Object resource(ITable table, String column, Object value, ResourceLoader loader, String prefix) throws DataSetException {
 		try {
 			if (value instanceof String) {
 				String string = (String) value;
@@ -41,7 +41,7 @@ public class ReplacementFunctions {
 	}
 	
 	public static final ReplacementFunction resource(ResourceLoader loader, String prefix) {
-		return (table, row, column, value) -> resource(table, row, column, value, loader, prefix);
+		return (table, row, column, value) -> resource(table, column, value, loader, prefix);
 	}
 
 	public static final ReplacementFunction toNull() {

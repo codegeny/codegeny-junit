@@ -1,4 +1,4 @@
-package org.codegeny.junit.database;
+package org.codegeny.junit;
 
 import javax.persistence.Basic;
 import javax.persistence.Entity;

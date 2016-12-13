@@ -44,10 +44,10 @@ public @Retention(RUNTIME) @Target(METHOD) @Repeatable(DBUnits.class) @interface
 				NON_STRICT.assertEquals(expectedDataSet, actualDataSet);
 			}
 			
-			public @Override void assertEquals(ITable expectedSortedTable, ITable actualSortedTable) throws DatabaseUnitException {
-				Column[] expectedColumns = expectedSortedTable.getTableMetaData().getColumns();
-				expectedSortedTable = new SortedTable(expectedSortedTable, expectedColumns);
-				actualSortedTable = new SortedTable(actualSortedTable, expectedColumns);
+			public @Override void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
+				Column[] expectedColumns = expectedTable.getTableMetaData().getColumns();
+				ITable expectedSortedTable = new SortedTable(expectedTable, expectedColumns);
+				ITable actualSortedTable = new SortedTable(actualTable, expectedColumns);
 				NON_STRICT.assertEquals(expectedSortedTable, actualSortedTable);
 			}
 		},
