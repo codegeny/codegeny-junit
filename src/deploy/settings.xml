@@ -20,12 +20,6 @@
 					<value>false</value>
 				</property>
 			</activation>
-			<distributionManagement>
-				<snapshotRepository>
-					<id>ossrh</id>
-					<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-				</snapshotRepository>
-			</distributionManagement>
 			<build>
 				<plugins>
 					<plugin>
