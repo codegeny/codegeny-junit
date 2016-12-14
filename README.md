@@ -22,7 +22,7 @@ DBUnitRule only needs 2 things to work:
 - A `ResourceLoader` to resolve (xml) data-sets
 - A `ConnectionProvider` to provide the database connection(s) to work on
 
-## Simple example
+### Simple example
 
 ```java
 @Rule
@@ -92,7 +92,7 @@ public void testSomething() { ... }
 
 ### Mixing DBUnitRule with embedded containers like OpenEJB
 
-If you are using an embedded container inside your integration tests, you can let that container managed the lifecycle of the `DataSource` and write
+If you are using an embedded container inside your integration tests, you can let that container manage the lifecycle of the `DataSource` and write
 just enough code to fetch the `DataSource` from the container to give it to the `DBUnitRule`:
 
 ```java
@@ -107,7 +107,7 @@ public class MyDatabaseIT {
     public static final EJBContainerRule CONTAINER = new EJBContainerRule(); 
 	
     @Rule
-    public final TestRule dbUnit = RuleChain
+    public final TestRule ruleChain = RuleChain
         .outerRule(new DBUnitRule(ResourceLoader.fromClass(this), name -> new DatabaseDataSourceConnection(CONTAINER.resource(DataSource.class, "defaultDataSource"))))
         .around(new InjectRule(this, CONTAINER))
         .around(new TransactionRule()); // transaction must come after dbunit
@@ -136,7 +136,7 @@ public class MyDatabaseIT {
     private DataSource dataSource;
 	
     @Rule
-    public final TestRule dbUnit = RuleChain
+    public final TestRule ruleChain = RuleChain
         .outerRule(new InjectRule(this, CONTAINER)) // injection must come before dbunit
         .around(new DBUnitRule(ResourceLoader.fromClass(this), name -> new DatabaseDataSourceConnection(this.dataSource))
         .around(new TransactionRule()); // transaction must come after dbunit
@@ -149,4 +149,38 @@ public class MyDatabaseIT {
 ```
 
 If you are using some kind of transaction rule, make sure that it comes after the DBUnit rule (otherwise, changes made inside the test won't be visible by the `DBUnitRule`
-and you will get an assertion error.
+and you will get an assertion error).
+
+If you are using OpenEJB ApplicationComposer:
+
+```java
+@Resource
+private DataSource dataSource;
+	
+@Rule
+public final TestRule ruleChain = RuleChain
+    .outerRule(new ApplicationComposerRule(this)) // injection must come before dbunit
+    .around(new DBUnitRule(ResourceLoader.fromClass(this), name -> new DatabaseDataSourceConnection(this.dataSource)));
+	
+@Configuration
+public Properties configuration() {
+    Properties configuration = new Properties();
+    configuration.setProperty("defaultDataSource", "new://Resource?type=DataSource");
+    configuration.setProperty("defaultDataSource.JdbcUrl", "jdbc:h2:mem:test;DB_CLOSE_DELAY=-1");
+    configuration.setProperty("defaultDataSource.JdbcDriver", "org.h2.Driver");
+    return configuration;
+}
+
+@Module
+public Any applicationComposerModule() { ... }
+
+@Test
+@DBUnit(dataSets = "initial.xml", expectedDataSets = "expected.xml")
+public void testSomething() { ... } 
+```
+
+TODO Arquillian
+
+## EntityManagerRule
+
+TODO
