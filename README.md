@@ -6,6 +6,21 @@
 
 A collection of JUnit rules (mainly for DBUnit and JPA) that I am using and wanted to share.
 
+```xml
+<dependency>
+	<groupId>org.codegeny</groupId>
+	<artifactId>codegeny-junit</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+</dependency>
+
+<repositories>
+	<repository>
+		<id>sonatype-nexus-snapshots</id>
+		<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+	</repository>
+</repositories>
+```
+
 ## DBUnitRule
 
 This is a thin layer which drives DBUnit through a JUnit rule and some annotations.
