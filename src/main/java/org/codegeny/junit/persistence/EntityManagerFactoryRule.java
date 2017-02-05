@@ -9,9 +9,12 @@ import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 import javax.persistence.SynchronizationType;
 
-import org.codegeny.junit.ThreadLocalRule;
+import org.junit.rules.ExternalResource;
 
-public class EntityManagerFactoryRule extends ThreadLocalRule<EntityManagerFactory> {
+public class EntityManagerFactoryRule extends ExternalResource implements Supplier<EntityManagerFactory> {
+	
+	private EntityManagerFactory entityManagerFactory;
+	private final Supplier<? extends EntityManagerFactory> opener;
 	
 	public EntityManagerFactoryRule(String persistenceUnitName) {
 		this(() -> Persistence.createEntityManagerFactory(persistenceUnitName));
@@ -22,7 +25,24 @@ public class EntityManagerFactoryRule extends ThreadLocalRule<EntityManagerFacto
 	}
 	
 	public EntityManagerFactoryRule(Supplier<? extends EntityManagerFactory> opener) {
-		super(opener, EntityManagerFactory::close);
+		this.opener = opener;
+	}
+	
+	@Override
+	protected void after() {
+		if (entityManagerFactory != null && entityManagerFactory.isOpen()) {
+			entityManagerFactory.close();
+		}
+	}
+	
+	@Override
+	public EntityManagerFactory get() {
+		return this.entityManagerFactory;
+	}
+	
+	@Override
+	protected void before() throws Throwable {
+		this.entityManagerFactory = opener.get();
 	}
 	
 	public EntityManagerRule createEntityManager() {
@@ -30,7 +50,7 @@ public class EntityManagerFactoryRule extends ThreadLocalRule<EntityManagerFacto
 	}
 	
 	public EntityManagerRule createEntityManager(Function<EntityManagerFactory, EntityManager> opener) {
-		return new EntityManagerRule(() -> opener.apply(get()));
+		return new EntityManagerRule(() -> opener.apply(this.entityManagerFactory));
 	}
 	
 	public EntityManagerRule createEntityManager(Map<?, ?> map) {

@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/codegeny/codegeny-junit.png)](https://travis-ci.org/codegeny/codegeny-junit)
-[![Code Coverage](https://codecov.io/gh/codegeny/codegeny-junit/branch/master/graph/badge.svg)](https://codecov.io/gh/codegeny/codegeny-junit/branch/master)
-[![Code Analysis](https://api.codacy.com/project/badge/Grade/727060bc23ae406f836f76fac448a01f)](https://www.codacy.com/app/codegeny/codegeny-junit)
+[![Build Status](https://img.shields.io/travis/codegeny/codegeny-junit.svg)](https://travis-ci.org/codegeny/codegeny-junit)
+[![Code Coverage](https://img.shields.io/codecov/c/github/codegeny/codegeny-junit.svg)](https://codecov.io/gh/codegeny/codegeny-junit)
+[![Code Analysis](https://img.shields.io/codacy/grade/727060bc23ae406f836f76fac448a01f.svg)](https://www.codacy.com/app/codegeny/codegeny-junit)
 
 # codegeny-junit
 

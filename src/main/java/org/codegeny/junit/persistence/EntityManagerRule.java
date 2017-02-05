@@ -6,14 +6,29 @@ import java.util.function.Supplier;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
 
-import org.codegeny.junit.ThreadLocalRule;
+import org.junit.rules.ExternalResource;
 
-public class EntityManagerRule extends ThreadLocalRule<EntityManager> {
-
+public class EntityManagerRule extends ExternalResource implements Supplier<EntityManager> {
+	
+	private EntityManager entityManager;
+	private final Supplier<? extends EntityManager> opener;
+	
 	public EntityManagerRule(Supplier<? extends EntityManager> opener) {
-		super(opener, EntityManager::close);
+		this.opener = opener;
+	}
+
+	@Override
+	protected void after() {
+		if (entityManager != null && entityManager.isOpen()) {
+			entityManager.close();
+		}
 	}
 	
+	@Override
+	protected void before() throws Throwable {
+		this.entityManager = opener.get();
+	}
+
 	public EntityTransactionRule beginAndCommitTransaction() {
 		return beginTransaction(transaction -> {
 			if (transaction.isActive()) {
@@ -21,16 +36,21 @@ public class EntityManagerRule extends ThreadLocalRule<EntityManager> {
 			}
 		});
 	}
-	
+
 	public EntityTransactionRule beginAndRollbackTransaction() {
 		return beginTransaction(EntityTransaction::rollback);
 	}
 	
 	public EntityTransactionRule beginTransaction(Consumer<? super EntityTransaction> closer) {
 		return new EntityTransactionRule(() -> {
-			EntityTransaction transaction = get().getTransaction();
+			EntityTransaction transaction = this.entityManager.getTransaction();
 			transaction.begin();
 			return transaction;
 		}, closer);
+	}
+	
+	@Override
+	public EntityManager get() {
+		return this.entityManager;
 	}
 }
