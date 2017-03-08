@@ -6,6 +6,7 @@ import javax.sql.DataSource;
 
 import org.apache.openejb.junit.ApplicationComposerRule;
 import org.apache.openejb.testing.Classes;
+import org.codegeny.junit.PresidentRepository;
 import org.codegeny.junit.PresidentService;
 import org.dbunit.database.DatabaseDataSourceConnection;
 import org.junit.Rule;
@@ -13,7 +14,7 @@ import org.junit.Test;
 import org.junit.rules.RuleChain;
 import org.junit.rules.TestRule;
 
-@Classes(cdi = true, value = PresidentService.class)
+@Classes(cdi = true, value = {PresidentService.class, PresidentRepository.class})
 public class TransactionalServiceInApplicationComposerDBUnitRule {
 	
 	@Resource

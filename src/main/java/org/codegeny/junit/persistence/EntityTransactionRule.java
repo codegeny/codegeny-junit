@@ -26,7 +26,7 @@ public class EntityTransactionRule extends ExternalResource implements Supplier<
 	}
 	
 	@Override
-	protected void before() throws Throwable {
+	protected void before() {
 		this.entityTransaction = opener.get();
 	}
 	

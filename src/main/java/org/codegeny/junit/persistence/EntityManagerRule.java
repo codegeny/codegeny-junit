@@ -25,7 +25,7 @@ public class EntityManagerRule extends ExternalResource implements Supplier<Enti
 	}
 	
 	@Override
-	protected void before() throws Throwable {
+	protected void before() {
 		this.entityManager = opener.get();
 	}
 

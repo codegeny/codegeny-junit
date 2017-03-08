@@ -41,7 +41,7 @@ public class EntityManagerFactoryRule extends ExternalResource implements Suppli
 	}
 	
 	@Override
-	protected void before() throws Throwable {
+	protected void before() {
 		this.entityManagerFactory = opener.get();
 	}
 	
