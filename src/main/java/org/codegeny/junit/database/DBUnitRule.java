@@ -107,7 +107,11 @@ public class DBUnitRule implements TestRule {
 	}
 	
 	protected IDataSet newDataSet(InputStream inputStream) throws DatabaseUnitException, SQLException {
-		return new DynamicReplacementDataSet(new FlatXmlDataSetBuilder().build(inputStream), toNull().andThen(resource(this.resourceLoader))); 
+		return new DynamicReplacementDataSet(newDataSetBuilder().build(inputStream), toNull().andThen(resource(this.resourceLoader))); 
+	}
+	
+	protected FlatXmlDataSetBuilder newDataSetBuilder() {
+		return new FlatXmlDataSetBuilder().setColumnSensing(true);
 	}
 	
 	private IDataSet newDataSet(String[] dataSetNames) throws DatabaseUnitException, SQLException {
