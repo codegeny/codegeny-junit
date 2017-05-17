@@ -41,7 +41,11 @@ public @Retention(RUNTIME) @Target(METHOD) @Repeatable(DBUnits.class) @interface
 		NON_STRICT_UNORDERED {
 
 			public @Override void assertEquals(IDataSet expectedDataSet, IDataSet actualDataSet) throws DatabaseUnitException {
-				NON_STRICT.assertEquals(expectedDataSet, actualDataSet);
+				for (String tableName : expectedDataSet.getTableNames()) {
+					ITable expectedTable = expectedDataSet.getTable(tableName);
+					ITable actualTable = actualDataSet.getTable(tableName);
+					assertEquals(expectedTable, actualTable);
+				}
 			}
 			
 			public @Override void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
