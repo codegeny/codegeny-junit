@@ -37,6 +37,12 @@ DBUnitRule only needs 2 things to work:
 - A `ResourceLoader` to resolve (xml) data-sets
 - A `ConnectionProvider` to provide the database connection(s) to work on
 
+NEW: A static factory method `DBUnitRule.defaultSettings(Object testInstance)` gives you a `DBUnitRule` configured with:
+
+- A `ResourceLoader` which will load resource on the classpath relative to the test class
+- A `ReflectionConnectionProvider` which will scan your test instance for **public**  fields or methods returning `IDatabaseConnection`, `Connection` or `DataSource`  and annotated with `@DBUnitDataSource`.
+
+
 ### Simple example
 
 ```java
@@ -103,6 +109,17 @@ When using multiple `DataSource`, you can specify the connection name via the `@
 @DBUnit(name = "customerDB" dataSets = "initial-customers.xml", expectedDataSets = "expected-customers.xml")
 @DBUnit(name = "orderDB" dataSets = "initial-orders.xml", expectedDataSets = "expected-orders.xml")
 public void testSomething() { ... }
+```
+
+There is a new `ReflectionConnectionProvider` which will scan your test instance  for **public** fields or methods returning `IDatabaseConnection`, `Connection` or `DataSource` and annotated with `@DBUnitDataSource`.
+
+```java
+@DBUnitDataSource("customName")
+private DataSource dataSource;
+
+...
+
+ConnectionProvider cp = name -> new ReflectionConnectionProvider(this); // this = test instance
 ```
 
 ### Mixing DBUnitRule with embedded containers like OpenEJB
