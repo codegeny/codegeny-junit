@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 import javax.sql.DataSource;
 
 import org.dbunit.DatabaseUnitException;
+import org.dbunit.DatabaseUnitRuntimeException;
 import org.dbunit.database.DatabaseConnection;
 import org.dbunit.database.DatabaseDataSourceConnection;
 import org.dbunit.database.IDatabaseConnection;
@@ -55,14 +56,14 @@ public class ReflectionConnectionProvider implements ConnectionProvider {
 	
 	@Override
 	public IDatabaseConnection getConnection(String name) throws Exception {
-		return byField(name).orElseGet(() -> byMethod(name).orElseThrow(() -> new RuntimeException("Cannot find " + name)));
+		return byField(name).orElseGet(() -> byMethod(name).orElseThrow(() -> new DatabaseUnitRuntimeException("Cannot find data source with name '" + name + "'")));
 	}
 	
 	private IDatabaseConnection getField(Field field) {
 		try {
 			return toDatabaseConnection(field.get(this.testInstance));
 		} catch (IllegalAccessException | SQLException | DatabaseUnitException exception) {
-			throw new RuntimeException(exception);
+			throw new DatabaseUnitRuntimeException(exception);
 		}
 	}
 	
@@ -70,7 +71,7 @@ public class ReflectionConnectionProvider implements ConnectionProvider {
 		try {
 			return toDatabaseConnection(method.invoke(this.testInstance));
 		} catch (IllegalAccessException | InvocationTargetException | SQLException | DatabaseUnitException exception) {
-			throw new RuntimeException(exception);
+			throw new DatabaseUnitRuntimeException(exception);
 		}
 	}
 	
@@ -84,6 +85,6 @@ public class ReflectionConnectionProvider implements ConnectionProvider {
 		if (object instanceof Connection) {
 			return new DatabaseConnection((Connection) object);
 		}
-		throw new RuntimeException("Cannot convert " + object + " to IDatabaseConnection");
+		throw new DatabaseUnitRuntimeException("Cannot convert " + object + " to IDatabaseConnection");
 	}
 }
