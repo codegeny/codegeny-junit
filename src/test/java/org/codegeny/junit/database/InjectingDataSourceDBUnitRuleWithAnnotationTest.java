@@ -34,7 +34,7 @@ public class InjectingDataSourceDBUnitRuleWithAnnotationTest {
 	@Rule
 	public final TestRule ruleChain = RuleChain
 		.outerRule(new EJBContainerRule(this)) // injection must come before dbunit
-		.around(new DBUnitRule(this)) //
+		.around(DBUnitRule.defaultSettings(this)) //
 		.around(new TransactionRule()); // transaction must come after dbunit
 	
 	@Test

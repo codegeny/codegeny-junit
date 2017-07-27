@@ -56,17 +56,17 @@ public class DBUnitRule implements TestRule {
 		}
 	}
 	
-	private final ConnectionProvider connectionProvider;
+	public static DBUnitRule defaultSettings(Class<?> testClass) {
+		return new DBUnitRule(ResourceLoader.fromClass(testClass), new ReflectionConnectionProvider(testClass));
+	}
+	
+	public static DBUnitRule defaultSettings(Object testInstance) {
+		return new DBUnitRule(ResourceLoader.fromClass(testInstance), new ReflectionConnectionProvider(testInstance));
+	}
+	
+	private final ConnectionProvider connectionProvider;	
 	private final Map<String, Object> properties = new HashMap<>();
 	private final ResourceLoader resourceLoader;
-	
-	public DBUnitRule(Class<?> testClass) {
-		this(ResourceLoader.fromClass(testClass), new ReflectionConnectionProvider(testClass));
-	}
-	
-	public DBUnitRule(Object testInstance) {
-		this(ResourceLoader.fromClass(testInstance), new ReflectionConnectionProvider(testInstance));
-	}
 	
 	public DBUnitRule(ResourceLoader resourceLoader, ConnectionProvider connectionProvider) {
 		this.resourceLoader = resourceLoader;
