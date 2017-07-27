@@ -60,6 +60,14 @@ public class DBUnitRule implements TestRule {
 	private final Map<String, Object> properties = new HashMap<>();
 	private final ResourceLoader resourceLoader;
 	
+	public DBUnitRule(Class<?> testClass) {
+		this(ResourceLoader.fromClass(testClass), new ReflectionConnectionProvider(testClass));
+	}
+	
+	public DBUnitRule(Object testInstance) {
+		this(ResourceLoader.fromClass(testInstance), new ReflectionConnectionProvider(testInstance));
+	}
+	
 	public DBUnitRule(ResourceLoader resourceLoader, ConnectionProvider connectionProvider) {
 		this.resourceLoader = resourceLoader;
 		this.connectionProvider = connectionProvider;
@@ -110,16 +118,16 @@ public class DBUnitRule implements TestRule {
 		return new DynamicReplacementDataSet(newDataSetBuilder().build(inputStream), toNull().andThen(resource(this.resourceLoader))); 
 	}
 	
-	protected FlatXmlDataSetBuilder newDataSetBuilder() {
-		return new FlatXmlDataSetBuilder().setColumnSensing(true);
-	}
-	
 	private IDataSet newDataSet(String[] dataSetNames) throws DatabaseUnitException, SQLException {
 		IDataSet dataSet = new DefaultDataSet();
 		for (String dataSetName : dataSetNames) {
 			dataSet = new CompositeDataSet(dataSet, newDataSet(getResource(dataSetName)));
 		}
 		return dataSet;
+	}
+	
+	protected FlatXmlDataSetBuilder newDataSetBuilder() {
+		return new FlatXmlDataSetBuilder().setColumnSensing(true);
 	}
 	
 	protected DataTypeFactoryResolver newDataTypeFactoryResolver() {
