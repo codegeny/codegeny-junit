@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.codegeny</groupId>
 	<artifactId>codegeny-junit</artifactId>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<url>http://codegeny.org/codegeny-junit</url>
 
 	<licenses>
