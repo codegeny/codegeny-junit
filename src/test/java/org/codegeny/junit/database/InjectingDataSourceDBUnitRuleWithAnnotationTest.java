@@ -25,7 +25,7 @@ import org.junit.rules.TestRule;
 public class InjectingDataSourceDBUnitRuleWithAnnotationTest {
 	
 	@Resource
-	@DBUnitDataSource // must be public
+	@DBUnitConnection // must be public
 	public DataSource dataSource;
 	
 	@PersistenceContext(unitName = "managed")

@@ -36,7 +36,8 @@ public class DBUnitRule implements TestRule {
 			this.dbUnit = dbUnit;
 		}
 		
-		public @Override void evaluate() throws Throwable {
+		@Override
+		public void evaluate() throws Throwable {
 			IDatabaseConnection connection = newConnection(this.dbUnit.name());
 			try {
 				IDatabaseTester tester = newTester(connection);
@@ -73,7 +74,8 @@ public class DBUnitRule implements TestRule {
 		this.connectionProvider = connectionProvider;
 	}
 	
-	public @Override Statement apply(Statement base, Description description) {
+	@Override
+	public Statement apply(Statement base, Description description) {
 		try {
 			Statement result = base;
 			for (DBUnit dbUnit : description.getTestClass().getDeclaredMethod(description.getMethodName()).getAnnotationsByType(DBUnit.class)) {

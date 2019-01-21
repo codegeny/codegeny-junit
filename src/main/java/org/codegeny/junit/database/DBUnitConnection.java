@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RUNTIME)
 @Target({ FIELD, METHOD })
-public @interface DBUnitDataSource {
+public @interface DBUnitConnection {
 
 	String name() default "default";
 }

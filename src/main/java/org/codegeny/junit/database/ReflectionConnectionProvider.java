@@ -4,19 +4,14 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import javax.sql.DataSource;
-
 import org.dbunit.DatabaseUnitException;
 import org.dbunit.DatabaseUnitRuntimeException;
-import org.dbunit.database.DatabaseConnection;
-import org.dbunit.database.DatabaseDataSourceConnection;
 import org.dbunit.database.IDatabaseConnection;
 
 public class ReflectionConnectionProvider implements ConnectionProvider {
@@ -46,7 +41,7 @@ public class ReflectionConnectionProvider implements ConnectionProvider {
 	}
 	
 	private Predicate<AnnotatedElement> byName(String name) {
-		return a -> a.isAnnotationPresent(DBUnitDataSource.class) && a.getAnnotation(DBUnitDataSource.class).name().equals(name);
+		return a -> a.isAnnotationPresent(DBUnitConnection.class) && a.getAnnotation(DBUnitConnection.class).name().equals(name);
 	}
 	
 	@SafeVarargs
@@ -76,15 +71,6 @@ public class ReflectionConnectionProvider implements ConnectionProvider {
 	}
 	
 	private IDatabaseConnection toDatabaseConnection(Object object) throws SQLException, DatabaseUnitException {
-		if (object instanceof IDatabaseConnection) {
-			return (IDatabaseConnection) object;
-		}
-		if (object instanceof DataSource) {
-			return new DatabaseDataSourceConnection((DataSource) object);
-		}
-		if (object instanceof Connection) {
-			return new DatabaseConnection((Connection) object);
-		}
-		throw new DatabaseUnitRuntimeException("Cannot convert " + object + " to IDatabaseConnection");
+		return ConnectionConverter.convert(object);
 	}
 }

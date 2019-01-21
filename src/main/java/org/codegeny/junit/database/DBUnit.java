@@ -18,12 +18,16 @@ import org.dbunit.dataset.ITableMetaData;
 import org.dbunit.dataset.SortedTable;
 import org.dbunit.operation.DatabaseOperation;
 
-public @Retention(RUNTIME) @Target(METHOD) @Repeatable(DBUnits.class) @interface DBUnit {
+@Retention(RUNTIME)
+@Target(METHOD)
+@Repeatable(DBUnits.class)
+public @interface DBUnit {
 	
 	enum AssertionMode implements DatabaseAssertion {
 		NON_STRICT {
 
-			public @Override void assertEquals(IDataSet expectedDataSet, IDataSet actualDataSet) throws DatabaseUnitException {
+			@Override
+			public void assertEquals(IDataSet expectedDataSet, IDataSet actualDataSet) throws DatabaseUnitException {
 				for (String tableName : expectedDataSet.getTableNames()) {
 					ITable expectedTable = expectedDataSet.getTable(tableName);
 					ITable actualTable = actualDataSet.getTable(tableName);
@@ -31,7 +35,8 @@ public @Retention(RUNTIME) @Target(METHOD) @Repeatable(DBUnits.class) @interface
 				}
 			}
 
-			public @Override void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
+			@Override
+			public void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
 				ITableMetaData expectedMetaData = expectedTable.getTableMetaData();
 				ITableMetaData actualMetaData = actualTable.getTableMetaData();
 				String[] ignoredColumns = Stream.of(Columns.getColumnDiff(expectedMetaData, actualMetaData).getActual()).map(Column::getColumnName).toArray(i -> new String[i]);
@@ -40,7 +45,8 @@ public @Retention(RUNTIME) @Target(METHOD) @Repeatable(DBUnits.class) @interface
 		},
 		NON_STRICT_UNORDERED {
 
-			public @Override void assertEquals(IDataSet expectedDataSet, IDataSet actualDataSet) throws DatabaseUnitException {
+			@Override
+			public void assertEquals(IDataSet expectedDataSet, IDataSet actualDataSet) throws DatabaseUnitException {
 				for (String tableName : expectedDataSet.getTableNames()) {
 					ITable expectedTable = expectedDataSet.getTable(tableName);
 					ITable actualTable = actualDataSet.getTable(tableName);
@@ -48,7 +54,8 @@ public @Retention(RUNTIME) @Target(METHOD) @Repeatable(DBUnits.class) @interface
 				}
 			}
 			
-			public @Override void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
+			@Override
+			public void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
 				Column[] expectedColumns = expectedTable.getTableMetaData().getColumns();
 				ITable expectedSortedTable = new SortedTable(expectedTable, expectedColumns);
 				ITable actualSortedTable = new SortedTable(actualTable, expectedColumns);
@@ -57,11 +64,13 @@ public @Retention(RUNTIME) @Target(METHOD) @Repeatable(DBUnits.class) @interface
 		},
 		STRICT {
 
-			public @Override void assertEquals(IDataSet expectedDataSet, IDataSet actualDataSet) throws DatabaseUnitException {
+			@Override
+			public void assertEquals(IDataSet expectedDataSet, IDataSet actualDataSet) throws DatabaseUnitException {
 				Assertion.assertEquals(expectedDataSet, actualDataSet);
 			}
 
-			public @Override void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
+			@Override
+			public void assertEquals(ITable expectedTable, ITable actualTable) throws DatabaseUnitException {
 				Assertion.assertEquals(expectedTable, actualTable);
 			}
 		};

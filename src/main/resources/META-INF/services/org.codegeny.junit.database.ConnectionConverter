@@ -1,0 +1,3 @@
+org.codegeny.junit.database.SimpleConnectionConverter
+org.codegeny.junit.database.DataSourceConnectionConverter
+org.codegeny.junit.database.StandardConnectionConverter

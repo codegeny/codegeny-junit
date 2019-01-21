@@ -6,7 +6,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-public @Retention(RUNTIME) @Target(METHOD) @interface DBUnits {
+@Retention(RUNTIME)
+@Target(METHOD)
+public @interface DBUnits {
 	
 	DBUnit[] value();
 }

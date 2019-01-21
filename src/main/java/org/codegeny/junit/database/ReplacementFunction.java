@@ -3,7 +3,8 @@ package org.codegeny.junit.database;
 import org.dbunit.dataset.DataSetException;
 import org.dbunit.dataset.ITable;
 
-public @FunctionalInterface interface ReplacementFunction {
+@FunctionalInterface
+public interface ReplacementFunction {
 
     Object replace(ITable table, int row, String column, Object value) throws DataSetException;
     

@@ -17,15 +17,18 @@ public class DynamicReplacementDataSet extends AbstractDataSet {
 			this.tableIterator = tableIterator;
 		}
 
-		public @Override ITable getTable() throws DataSetException {
+		@Override
+		public ITable getTable() throws DataSetException {
 			return new ReplacementTable(tableIterator.getTable());
 		}
 
-		public @Override ITableMetaData getTableMetaData() throws DataSetException {
+		@Override
+		public ITableMetaData getTableMetaData() throws DataSetException {
 			return tableIterator.getTableMetaData();
 		}
 
-		public @Override boolean next() throws DataSetException {
+		@Override
+		public boolean next() throws DataSetException {
 			return tableIterator.next();
 		}
 	}
@@ -38,15 +41,18 @@ public class DynamicReplacementDataSet extends AbstractDataSet {
 			this.table = table;
 		}
 
-		public @Override int getRowCount() {
+		@Override
+		public int getRowCount() {
 			return table.getRowCount();
 		}
 
-		public @Override ITableMetaData getTableMetaData() {
+		@Override
+		public ITableMetaData getTableMetaData() {
 			return table.getTableMetaData();
 		}
 
-		public @Override Object getValue(int row, String column) throws DataSetException {
+		@Override
+		public Object getValue(int row, String column) throws DataSetException {
 			return function.replace(table, row, column, table.getValue(row, column));
 		}
 	}
@@ -59,19 +65,23 @@ public class DynamicReplacementDataSet extends AbstractDataSet {
 		this.function = function;
 	}
 
-	protected @Override ITableIterator createIterator(boolean reversed) throws DataSetException {
+	@Override
+	protected ITableIterator createIterator(boolean reversed) throws DataSetException {
 		return new ReplacementTableIterator(reversed ? dataSet.reverseIterator() : dataSet.iterator());
 	}
 
-	public @Override ITable getTable(String tableName) throws DataSetException {
+	@Override
+	public ITable getTable(String tableName) throws DataSetException {
 		return new ReplacementTable(dataSet.getTable(tableName));
 	}
 
-	public @Override String[] getTableNames() throws DataSetException {
+	@Override
+	public String[] getTableNames() throws DataSetException {
 		return dataSet.getTableNames();
 	}
 
-	public @Override ITableMetaData getTableMetaData(String tableName) throws DataSetException {
+	@Override
+	public ITableMetaData getTableMetaData(String tableName) throws DataSetException {
 		return dataSet.getTableMetaData(tableName);
 	}
 }
