@@ -20,24 +20,25 @@ package org.codegeny.junit.database;
  * #L%
  */
 
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.util.ServiceLoader;
 
 import org.dbunit.DatabaseUnitException;
-import org.dbunit.DatabaseUnitRuntimeException;
-import org.dbunit.database.IDatabaseConnection;
+import org.dbunit.dataset.datatype.DefaultDataTypeFactory;
+import org.dbunit.dataset.datatype.IDataTypeFactory;
 
-public interface ConnectionConverter {
+public interface DataTypeFactorySupplier {
 	
-	IDatabaseConnection toConnection(Object object) throws SQLException, DatabaseUnitException;
+	IDataTypeFactory createDataTypeFactory(DatabaseMetaData databaseMetaData) throws DatabaseUnitException, SQLException;
 	
-	static IDatabaseConnection convert(Object object) throws SQLException, DatabaseUnitException {
-		for (ConnectionConverter converter : ServiceLoader.load(ConnectionConverter.class)) {
-			IDatabaseConnection result = converter.toConnection(object);
+	static IDataTypeFactory resolveDataTypeFactory(DatabaseMetaData databaseMetaData) throws DatabaseUnitException, SQLException {
+		for (DataTypeFactorySupplier supplier : ServiceLoader.load(DataTypeFactorySupplier.class)) {
+			IDataTypeFactory result = supplier.createDataTypeFactory(databaseMetaData);
 			if (result != null) {
 				return result;
 			}
-		}		
-		throw new DatabaseUnitRuntimeException("Cannot convert " + object + " to IDatabaseConnection");
+		}
+		return new DefaultDataTypeFactory();
 	}
 }

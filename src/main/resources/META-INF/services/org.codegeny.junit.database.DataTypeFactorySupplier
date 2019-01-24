@@ -18,6 +18,5 @@
 # #L%
 ###
 
-org.codegeny.junit.database.converter.SimpleConnectionConverter
-org.codegeny.junit.database.converter.DataSourceConnectionConverter
-org.codegeny.junit.database.converter.StandardConnectionConverter
+org.codegeny.junit.database.datatype.H2DataTypeSupplier
+org.codegeny.junit.database.datatype.HsqldbDataTypeSupplier

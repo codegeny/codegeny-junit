@@ -1,4 +1,4 @@
-package org.codegeny.junit;
+package org.codegeny.junit.database.converter;
 
 /*-
  * #%L
@@ -20,27 +20,19 @@ package org.codegeny.junit;
  * #L%
  */
 
-import java.util.Optional;
+import java.sql.SQLException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import javax.sql.DataSource;
 
-@ApplicationScoped
-public class PresidentRepository {
+import org.codegeny.junit.database.ConnectionConverter;
+import org.dbunit.DatabaseUnitException;
+import org.dbunit.database.DatabaseDataSourceConnection;
+import org.dbunit.database.IDatabaseConnection;
+
+public class DataSourceConnectionConverter implements ConnectionConverter {
 	
-	@PersistenceContext(unitName = "managed")
-	private EntityManager entityManager;
-	
-	public Optional<President> findPresident(long id) {
-		return Optional.ofNullable(this.entityManager.getReference(President.class, id));
-	}
-	
-	public void removePresident(President president) {
-		this.entityManager.remove(president);
-	}
-	
-	public void addPresident(President president) {
-		this.entityManager.persist(president);
+	@Override
+	public IDatabaseConnection toConnection(Object object) throws SQLException, DatabaseUnitException {
+		return object instanceof DataSource ? new DatabaseDataSourceConnection((DataSource) object) : null;
 	}
 }

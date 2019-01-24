@@ -1,5 +1,25 @@
 package org.codegeny.junit.database;
 
+/*-
+ * #%L
+ * A collection of JUnit rules
+ * %%
+ * Copyright (C) 2016 - 2019 Codegeny
+ * %%
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * #L%
+ */
+
 import static org.codegeny.junit.database.ReplacementFunctions.resource;
 import static org.codegeny.junit.database.ReplacementFunctions.toNull;
 
@@ -104,9 +124,8 @@ public class DBUnitRule implements TestRule {
 	protected IDatabaseConnection newConnection(String connectionName) throws DatabaseUnitException, SQLException {
 		try {
 			IDatabaseConnection connection = connectionProvider.getConnection(connectionName);
-			DataTypeFactoryResolver resolver = newDataTypeFactoryResolver();
 			DatabaseConfig configuration = connection.getConfig();
-			configuration.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, resolver.resolveDataTypeFactory(connection.getConnection().getMetaData()));
+			configuration.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY, DataTypeFactorySupplier.resolveDataTypeFactory(connection.getConnection().getMetaData()));
 			this.properties.forEach(configuration::setProperty);
 			return connection;
 		} catch (DatabaseUnitException | SQLException exception) {
@@ -130,10 +149,6 @@ public class DBUnitRule implements TestRule {
 	
 	protected FlatXmlDataSetBuilder newDataSetBuilder() {
 		return new FlatXmlDataSetBuilder().setColumnSensing(true);
-	}
-	
-	protected DataTypeFactoryResolver newDataTypeFactoryResolver() {
-		return new DataTypeFactoryResolver();
 	}
 	
 	protected IDatabaseTester newTester(IDatabaseConnection connection) throws DatabaseUnitException, SQLException {

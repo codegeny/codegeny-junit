@@ -1,4 +1,4 @@
-package org.codegeny.junit;
+package org.codegeny.junit.database.datatype;
 
 /*-
  * #%L
@@ -20,27 +20,17 @@ package org.codegeny.junit;
  * #L%
  */
 
-import java.util.Optional;
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
+import org.codegeny.junit.database.DataTypeFactorySupplier;
+import org.dbunit.dataset.datatype.IDataTypeFactory;
+import org.dbunit.ext.hsqldb.HsqldbDataTypeFactory;
 
-@ApplicationScoped
-public class PresidentRepository {
-	
-	@PersistenceContext(unitName = "managed")
-	private EntityManager entityManager;
-	
-	public Optional<President> findPresident(long id) {
-		return Optional.ofNullable(this.entityManager.getReference(President.class, id));
-	}
-	
-	public void removePresident(President president) {
-		this.entityManager.remove(president);
-	}
-	
-	public void addPresident(President president) {
-		this.entityManager.persist(president);
+public class HsqldbDataTypeSupplier implements DataTypeFactorySupplier {
+
+	@Override
+	public IDataTypeFactory createDataTypeFactory(DatabaseMetaData databaseMetaData)  throws SQLException {
+		return "HSQL Database Engine".equals(databaseMetaData.getDatabaseProductName()) ? new HsqldbDataTypeFactory() : null;
 	}
 }
